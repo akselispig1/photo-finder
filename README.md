@@ -63,6 +63,30 @@ content needed for analysis/search is sent to the Claude API.
 > The server must keep running on your computer while you use the app on the phone.
 > (A phone can't run the Node server itself.)
 
+## Getting a link you can open anywhere (temporary public URL)
+
+Want an `https://…` link that works from any network — not just the same Wi‑Fi?
+Expose your locally‑running app with a free Cloudflare quick tunnel (no account):
+
+1. **Terminal 1** — run the app:
+   ```bash
+   npm start
+   ```
+2. Install `cloudflared` once: `brew install cloudflared` (macOS), or download it
+   from https://github.com/cloudflare/cloudflared/releases.
+3. **Terminal 2** — open the tunnel:
+   ```bash
+   npm run share
+   ```
+   It prints a link like `https://random-words.trycloudflare.com`. Open that on your
+   iPhone (Share → Add to Home Screen for a full‑screen app).
+
+The link lives only while `npm run share` is running — stop it (Ctrl‑C) when you're
+done. Because the app has no login, treat the URL as a secret: anyone who has it can
+use your library and your API key while the tunnel is up.
+
+> No Homebrew? You can also run `npx cloudflared tunnel --url http://localhost:3000`.
+
 ## Configuration
 
 | Setting | Where | Default |
