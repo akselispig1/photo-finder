@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import exifr from 'exifr';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -296,9 +297,25 @@ app.delete('/api/memories/:id', (req, res) => {
   res.json({ ok: true });
 });
 
+function lanAddresses() {
+  const out = [];
+  for (const iface of Object.values(os.networkInterfaces())) {
+    for (const net of iface || []) {
+      if (net.family === 'IPv4' && !net.internal) out.push(net.address);
+    }
+  }
+  return out;
+}
+
+// Bind on all interfaces so you can open it from your phone on the same Wi-Fi.
 // Resume any interrupted analysis on boot.
-app.listen(PORT, () => {
-  console.log(`\n  📷  Photo Finder running at http://localhost:${PORT}\n`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n  📷  Photo Finder is running.\n`);
+  console.log(`     On this computer:  http://localhost:${PORT}`);
+  for (const ip of lanAddresses()) {
+    console.log(`     On your iPhone:    http://${ip}:${PORT}   (same Wi-Fi, then Share → Add to Home Screen)`);
+  }
+  console.log('');
   if (ai.hasKey()) {
     update((db) => { for (const p of db.photos) if (p.status === 'analyzing') p.status = 'pending'; });
     processQueue();

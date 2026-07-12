@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Photo Finder</title>
+  <meta name="theme-color" content="#c4643b" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icon-192.png" />
+  <link rel="apple-touch-icon" href="/icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Photos" />
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
@@ -35,10 +42,13 @@
           <h2>Your library</h2>
           <p class="muted" id="library-sub">Upload the photos from your phone to get started.</p>
         </div>
-        <label class="btn primary">
-          <input type="file" id="file-input" accept="image/*" multiple hidden />
-          + Add photos
-        </label>
+        <div class="add-photos">
+          <label class="btn primary">
+            <input type="file" id="file-input" accept="image/*" multiple hidden />
+            + Add photos
+          </label>
+          <small class="muted">On iPhone: tap here and pick straight from your Photos library — no AirDrop needed.</small>
+        </div>
       </div>
       <div id="upload-progress" class="upload-progress hidden"></div>
       <div class="filters" id="library-filters"></div>

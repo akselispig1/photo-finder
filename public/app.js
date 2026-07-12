@@ -73,25 +73,43 @@ function renderLibrary() {
     : 'Upload the photos from your phone to get started.';
 }
 
-// ---- upload (with client-side resize to keep things fast & cheap) ------
+// ---- upload -------------------------------------------------------------
+// Photos are resized in the browser and sent in small batches, so selecting
+// hundreds of photos at once (e.g. straight from the iPhone camera roll)
+// uploads reliably with live progress instead of one giant request.
+const UPLOAD_BATCH = 10;
+
 $('#file-input').addEventListener('change', async (e) => {
   const files = [...e.target.files];
   e.target.value = '';
   if (!files.length) return;
+
   const prog = $('#upload-progress');
   prog.classList.remove('hidden');
-  const fd = new FormData();
-  let n = 0;
-  for (const file of files) {
-    prog.textContent = `Preparing ${++n}/${files.length}…`;
-    try { fd.append('photos', await resizeImage(file), (file.name || 'photo').replace(/\.\w+$/, '') + '.jpg'); }
-    catch { fd.append('photos', file, file.name); }
+  let done = 0, failed = 0;
+
+  for (let i = 0; i < files.length; i += UPLOAD_BATCH) {
+    const slice = files.slice(i, i + UPLOAD_BATCH);
+    const fd = new FormData();
+    for (const file of slice) {
+      prog.textContent = `Preparing ${done + 1}–${Math.min(done + slice.length, files.length)} of ${files.length}…`;
+      try { fd.append('photos', await resizeImage(file), (file.name || 'photo').replace(/\.\w+$/, '') + '.jpg'); }
+      catch { fd.append('photos', file, file.name || 'photo.jpg'); }
+    }
+    prog.textContent = `Uploading ${Math.min(done + slice.length, files.length)} of ${files.length}…`;
+    try {
+      const res = await fetch('/api/photos', { method: 'POST', body: fd });
+      if (!res.ok) throw new Error('upload failed');
+      await res.json();
+      done += slice.length;
+    } catch {
+      failed += slice.length;
+    }
+    loadPhotos(); // show photos appearing as they land
   }
-  prog.textContent = `Uploading ${files.length} photo(s)…`;
-  const res = await fetch('/api/photos', { method: 'POST', body: fd });
-  await res.json();
+
   prog.classList.add('hidden');
-  toast(`Added ${files.length} photo(s). Analysis has started.`);
+  toast(`Added ${done} photo(s)${failed ? `, ${failed} failed` : ''}. Analysis is running.`);
   loadPhotos();
 });
 

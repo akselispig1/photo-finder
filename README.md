@@ -44,12 +44,24 @@ Open the app, go to **Settings**, and paste your Claude API key (or set
 `ANTHROPIC_API_KEY` in your environment before starting). Analysis begins
 automatically as soon as a key is present.
 
-## Getting your photos off your phone
+## Using it on your iPhone (no AirDrop)
 
-Photo Finder is a web app, so export your phone's photos to your computer first
-(AirDrop, Google Photos download, USB, etc.), then drag them into the **Library**
-tab. Live end‑to‑end phone sync would need a native app — this keeps everything
-local and simple.
+You don't need to export or AirDrop anything. Use it right on the phone:
+
+1. Run `npm start` on a computer that's on the **same Wi‑Fi** as your iPhone. The
+   server prints an address like `http://192.168.1.23:3000`.
+2. Open that address in **Safari** on your iPhone.
+3. Tap **Share → Add to Home Screen** — it installs like a real app (full‑screen,
+   its own icon).
+4. Open it, tap **+ Add photos**, and pick straight from your **Photos library** —
+   iOS lets you multi‑select. Photos are shrunk on the phone before uploading and
+   sent in small batches, so you can add hundreds at once and watch them stream in.
+
+That's the whole loop: your photos stay on your own computer, and only the image
+content needed for analysis/search is sent to the Claude API.
+
+> The server must keep running on your computer while you use the app on the phone.
+> (A phone can't run the Node server itself.)
 
 ## Configuration
 
