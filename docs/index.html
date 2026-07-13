@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Photo Finder</title>
+  <meta name="theme-color" content="#c4643b" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Photos" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">◐</span>
+      <div>
+        <h1>Photo Finder</h1>
+        <p class="tagline">Find any moment. Relive every memory.</p>
+      </div>
+    </div>
+    <div class="status" id="status"></div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="library" class="active">Library</button>
+    <button data-tab="search">Find a photo</button>
+    <button data-tab="memories">Memories</button>
+    <button data-tab="people">People</button>
+    <button data-tab="about">About me</button>
+    <button data-tab="settings">Settings</button>
+  </nav>
+
+  <div id="key-banner" class="key-banner hidden">
+    Add your Claude API key in <b>Settings</b> to switch on AI analysis, search and memories.
+    <button class="btn small" id="key-banner-btn">Open Settings</button>
+  </div>
+
+  <main>
+    <!-- LIBRARY -->
+    <section id="library" class="tab active">
+      <div class="row spread">
+        <div>
+          <h2>Your library</h2>
+          <p class="muted" id="library-sub">Add the photos from your phone to get started.</p>
+        </div>
+        <div class="add-photos">
+          <label class="btn primary">
+            <input type="file" id="file-input" accept="image/*" multiple hidden />
+            + Add photos
+          </label>
+          <small class="muted">On iPhone: tap here and pick straight from your Photos library — no AirDrop needed.</small>
+        </div>
+      </div>
+      <div id="upload-progress" class="upload-progress hidden"></div>
+      <div class="filters" id="library-filters"></div>
+      <div id="grid" class="grid"></div>
+      <div id="library-empty" class="empty hidden">
+        <p>Nothing here yet.</p>
+        <p class="muted">Add photos and the AI will start understanding each one — who's in it, where, roughly when, and the mood.</p>
+      </div>
+    </section>
+
+    <!-- SEARCH -->
+    <section id="search" class="tab">
+      <h2>Find a photo</h2>
+      <p class="muted">Describe it in your own words — “the photo where I was in a pram”, “me and Sam at the beach”, “birthdays from the 90s”.</p>
+      <form id="search-form" class="searchbar">
+        <input id="search-input" placeholder="Describe the memory you're looking for…" autocomplete="off" />
+        <button class="btn primary" type="submit">Search</button>
+      </form>
+      <div class="chips" id="search-chips"></div>
+      <div id="search-answer" class="answer hidden"></div>
+      <div id="search-results" class="grid"></div>
+    </section>
+
+    <!-- MEMORIES -->
+    <section id="memories" class="tab">
+      <h2>Memories</h2>
+      <p class="muted">Ask for a collection and it will gather the right photos and tell the story.</p>
+      <form id="memory-form" class="searchbar">
+        <input id="memory-input" placeholder="e.g. memories with friends, childhood summers, holidays…" autocomplete="off" />
+        <button class="btn primary" type="submit">Make a memory</button>
+      </form>
+      <div class="chips" id="memory-chips"></div>
+      <div id="memories-list"></div>
+    </section>
+
+    <!-- PEOPLE -->
+    <section id="people" class="tab">
+      <h2>People</h2>
+      <p class="muted">Add the important people in your life. Tag them in photos so searches like “me and my brother” get sharper.</p>
+      <form id="person-form" class="searchbar">
+        <input id="person-input" placeholder="Add a person's name…" autocomplete="off" />
+        <button class="btn primary" type="submit">Add</button>
+      </form>
+      <div id="people-list" class="people-list"></div>
+    </section>
+
+    <!-- ABOUT ME (onboarding) -->
+    <section id="about" class="tab">
+      <h2>About me</h2>
+      <p class="muted">Spend a few minutes telling the app who you are. It uses this to understand your photos — who's who, where you lived, and what matters to you.</p>
+      <div class="onboard">
+        <div class="chat" id="chat"></div>
+        <form id="chat-form" class="chat-form">
+          <input id="chat-input" placeholder="Type your answer…" autocomplete="off" />
+          <button class="btn primary" type="submit">Send</button>
+        </form>
+        <div class="onboard-actions">
+          <button class="btn ghost" id="onboard-start">Start / restart interview</button>
+        </div>
+      </div>
+      <div id="profile-card" class="profile-card hidden"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settings" class="tab">
+      <h2>Settings</h2>
+      <div class="card">
+        <label class="field">
+          <span>Claude API key</span>
+          <input type="password" id="api-key" placeholder="sk-ant-…" />
+          <small class="muted">Saved only in <b>this browser</b> (never uploaded to GitHub). The app talks to Claude directly from your device. Don't use this on a shared computer.</small>
+        </label>
+        <label class="field">
+          <span>Model</span>
+          <input type="text" id="model" placeholder="claude-opus-4-8" />
+          <small class="muted">Default: claude-opus-4-8. Use a smaller model (e.g. claude-haiku-4-5) to analyse large libraries more cheaply.</small>
+        </label>
+        <div class="row">
+          <button class="btn primary" id="save-settings">Save</button>
+          <button class="btn ghost" id="reanalyze">Re-analyse all photos</button>
+        </div>
+        <p id="settings-msg" class="muted"></p>
+        <hr style="border:none;border-top:1px solid var(--line);margin:16px 0" />
+        <p class="muted">Your photos live only in this browser on this device. <button class="btn ghost small" id="clear-all">Erase everything</button></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox hidden">
+    <button class="lb-close" id="lb-close">✕</button>
+    <div class="lb-inner">
+      <img id="lb-img" alt="" />
+      <aside class="lb-info" id="lb-info"></aside>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="vendor/exifr.js"></script>
+  <script src="app.js" type="module"></script>
+</body>
+</html>
