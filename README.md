@@ -10,6 +10,26 @@ It also spends five minutes getting to know **who you are** — your family, the
 places you lived, your friends and pets — so it understands references like *"me"*,
 *"my brother"* or the town you grew up in.
 
+## 🌐 Just want a link? Use the GitHub Pages version
+
+There's a **no‑install, browser‑only build** in [`docs/`](docs/) that runs entirely on
+your phone — no server, no computer to keep on. It stores your photos in your browser
+and talks to Claude directly. Turn it on once:
+
+1. In this repo, open **Settings → Pages**.
+2. Under **Build and deployment → Source**, choose **Deploy from a branch**.
+3. Pick the branch that has this code and the **`/docs`** folder, then **Save**.
+4. After a minute your link is live at **`https://akselispig1.github.io/photo-finder/`**.
+
+Open that link in Safari on your iPhone → **Share → Add to Home Screen**. In the app's
+**Settings** tab, paste your Claude API key (it's saved only in your browser, never in
+the repo), then tap **+ Add photos** and pick from your camera roll.
+
+> Trade‑offs of the browser build: your photos live in that browser on that one device
+> (private, but not synced across devices), and your API key is stored in the browser —
+> so don't use it on a shared computer. Prefer photos that sync and stay on a server?
+> Run the Node version below instead.
+
 ## What it does
 
 - **Import your photos** — drag in a whole camera roll. Images are resized in the

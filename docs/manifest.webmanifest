@@ -1,0 +1,14 @@
+{
+  "name": "Photo Finder",
+  "short_name": "Photos",
+  "description": "Find any moment and relive every memory, powered by AI.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#f6f4ef",
+  "theme_color": "#c4643b",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
